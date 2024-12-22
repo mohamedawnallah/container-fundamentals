@@ -1,0 +1,21 @@
+FROM alpine:3.21
+
+LABEL org.opencontainers.image.authors="jamieduncan@google.com" \
+      org.opencontainers.image.source="https://github.com/jduncan-rva/container-fundamentals" \
+      org.opencontainers.image.description="Container Fundamentals - Static Website Image" \
+      org.opencontainers.image.licenses="APACHE2"
+
+# Install dependencies (nginx) and clean up after installation.
+RUN apk update && \
+    apk add --no-cache nginx && \
+    rm -rf /var/cache/apk/*
+
+# Copy configuration and web content.
+COPY config/nginx.conf /etc/nginx/
+COPY web_content/ /var/www/
+
+# Expose the port.
+EXPOSE 80
+
+# Use the official CMD.
+CMD ["nginx", "-g", "daemon off;"]
